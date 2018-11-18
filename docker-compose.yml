@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    image: abiosoft/caddy
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - ./configs/Caddyfile:/etc/Caddyfile:ro
+        - ./web:/srv/web:ro
+        - $HOME/.caddy:/root/.caddy:rw
+    depends_on:
+      - v2ray
+  v2ray:
+    image: v2ray/official
+    expose:
+        - "1443"
+    volumes:
+        - ./configs/v2ray:/etc/v2ray:ro

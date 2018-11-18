@@ -1,0 +1,9 @@
+example.com {
+  log stdout
+  errors stderr
+  root /srv/web
+  proxy /graphql v2ray:1443 {
+    websocket
+    header_upstream -Origin
+  }
+}
