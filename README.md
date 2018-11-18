@@ -36,7 +36,7 @@ Update `./configs/v2ray/congfig.json`
 
 Update `./configs/Caddyfile`
 
-- Replace `example.com` with real domain
+- Replace `localhost:8080` with real domain
 
 ## Start
 
