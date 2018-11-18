@@ -1,6 +1,8 @@
 # docker-v2ray
 A docker-compose deployment for `v2ray + WebSocket + TLS` setup.
 
+Recommended server: [bandwagonhost.com](https://bandwagonhost.com/aff.php?aff=39559&gid=1)
+
 ## 1. CentOS Setup
 
 1. Install tools `yum install -y iperf3 vim git`
