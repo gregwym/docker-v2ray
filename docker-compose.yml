@@ -2,6 +2,7 @@ version: '3'
 services:
   web:
     image: abiosoft/caddy
+    restart: always
     ports:
         # - "8080:8080"
         - "80:80"
@@ -14,6 +15,7 @@ services:
       - v2ray
   v2ray:
     image: v2ray/official
+    restart: always
     expose:
         - "1443"
     volumes:
