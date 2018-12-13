@@ -30,7 +30,7 @@ chmod +x /usr/local/bin/docker-compose
 
 ## 2. Config
 
-Update `./configs/v2ray/congfig.json`
+Update `./configs/v2ray/config.json`
 
 - `client-uuid`
 - `client@example.com`
