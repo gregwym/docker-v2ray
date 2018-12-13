@@ -10,7 +10,7 @@ Recommended server: [bandwagonhost.com](https://bandwagonhost.com/aff.php?aff=39
 
 ### Add EPEL Repo
 ```
-yum install epel-release
+yum install -y epel-release
 ```
 
 ### Install docker
