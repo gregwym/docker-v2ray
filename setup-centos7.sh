@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Add repo
-yum install epel-release
+yum install -y epel-release
 
 # Install docker
 yum install -y yum-utils device-mapper-persistent-data lvm2
