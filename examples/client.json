@@ -74,21 +74,13 @@
               "Host": "example.com"
             }
           },
-          "security": "tls",
-          "sockopt": {
-            "mark": 255
-          }
+          "security": "tls"
         }
       },
       {
         "protocol": "freedom",
         "tag": "direct",
-        "settings": {},
-        "streamSettings": {
-          "sockopt": {
-            "mark": 255
-          }
-        }
+        "settings": {}
       }
     ],
     "routing": {
