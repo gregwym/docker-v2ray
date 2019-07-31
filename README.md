@@ -50,3 +50,10 @@ Or run as daemon
 ```
 docker-compose up -d
 ```
+
+## 4. Setup client
+See `./examples`
+
+- client.json: for v2ray 4.20.0
+- client.legacy.json: for old v2ray or v2rayU
+- transparent-proxy.json: gateway proxy thru dokodemo-door + iptables
