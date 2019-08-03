@@ -1,32 +1,20 @@
 #!/bin/sh
 
-i=0
-while [ $i -le 20 ]; do
-  success_start_service=$(nvram get success_start_service)
-  if [ "$success_start_service" == "1" ]; then
-    break
-  fi
-  i=$(($i + 1))
-  echo "autorun APP: wait $i seconds..."
-  sleep 1
-done
-
 DAEMON_DIR=/mnt/sda1/v2ray
 DAEMON=$DAEMON_DIR/current/v2ray
 DAEMON_PARAMS="-config $DAEMON_DIR/config.json"
 NAME=v2ray
-# DAEMONUSER=v2ray
 PID_DIR=/var/run/v2ray
 PID_FILE=$PID_DIR/v2ray.pid
 LOG_DIR=/tmp/var/logs/v2ray
 LOG_OUT=$LOG_DIR/stdout.log
 LOG_ERR=$LOG_DIR/stderr.log
 
-test -x $DAEMON || exit 0
+test -x $DAEMON || exit 255
 
 setupIptables() {
   echo "Setting up NAT rules"
-  iptables -t nat -N V2RAY || iptables -t nat -F V2RAY          # 新建或清空 V2RAY 的链
+  iptables -t nat -N V2RAY || iptables -t nat -F V2RAY # 新建或清空 V2RAY 的链
   iptables -t nat -A V2RAY -d 0.0.0.0/8 -j RETURN
   iptables -t nat -A V2RAY -d 10.0.0.0/8 -j RETURN
   iptables -t nat -A V2RAY -d 127.0.0.0/8 -j RETURN
@@ -44,8 +32,8 @@ setupIptables() {
 
 flushIptables() {
   echo "Deleting NAT rules"
-  iptables -t nat -D PREROUTING -p tcp -j V2RAY
   # iptables -t nat -D OUTPUT -p tcp -j V2RAY
+  iptables -t nat -D PREROUTING -p tcp -j V2RAY
   iptables -t nat -F V2RAY
   iptables -t nat -X V2RAY
   echo "NAT rules deleted"
@@ -66,34 +54,36 @@ start() {
     echo "Failed to start $NAME"
     exit 1
   fi
-  # setupIptables
   echo "$NAME started"
+  setupIptables
 }
 
 stop() {
+  flushIptables
   echo "Stopping $NAME"
   kill $(cat $PID_FILE)
-  if [ $? != 0 ]; then
-    echo "Failed to stop $NAME"
-    exit 1
-  fi
   rm -f $PID_FILE
-  # flushIptables
   echo "$NAME stopped"
 }
 
 status() {
-  if [ -f $PID_FILE ]; then
-    PID=$(cat $PID_FILE)
-    if [ -n "$PID" -a -e /proc/$PID ]; then
-      echo "$NAME is running, pid: $PID"
-      exit 0
-    fi
-    echo "$NAME is stopped"
-  else
-    echo "$NAME is stopped"
+  if ! iptables -t nat -C PREROUTING -p tcp -j V2RAY; then
+    echo "iptables rule does not exists"
+    exit 3
   fi
-  exit 1
+
+  if [ ! -f $PID_FILE ]; then
+    echo "$NAME is stopped"
+    exit 1
+  fi
+
+  PID=$(cat $PID_FILE)
+  if [ ! -n "$PID" -o ! -e /proc/$PID ]; then
+    echo "$NAME is stopped"
+    exit 2
+  fi
+
+  echo "$NAME is running, pid: $PID"
 }
 
 case "$1" in
@@ -112,9 +102,6 @@ status)
   ;;
 *)
   echo "Usage: (start|stop|restart|status)"
-  exit 1
+  exit 255
   ;;
 esac
-echo "Done."
-exit 0
-EOF
