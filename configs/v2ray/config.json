@@ -90,7 +90,7 @@
       {
         "type": "field",
         "protocol": ["bittorrent"],
-        "outboundTag": "block"
+        "outboundTag": "blocked"
       }
     ]
   }
